@@ -3,8 +3,6 @@
 
 # # MAJOR PROJECT - TWITTER DATASET
 
-# In[1]:
-
 
 import pandas as pd, re
 import numpy as np
@@ -13,62 +11,24 @@ from nltk.tokenize import sent_tokenize
 import warnings
 warnings.filterwarnings('ignore')
 
-
-# In[2]:
-
-
 nltk.download('punkt')
 nltk.download()
 
-
-# In[15]:
-
-
 info_df=pd.read_csv('Information.csv',encoding='latin-1')
 
-
-# # EXPLORATORY DATA ANALYSIS
-
-# In[16]:
-
-
 info_df.columns
-
-
-# In[17]:
-
 
 info_df=info_df[[ 'gender', 'gender:confidence', 'description',
         'link_color', 'name', 'sidebar_color', 'text', 'tweet_count']]
 
-
-# In[18]:
-
-
 info_df
-
-
-# In[19]:
-
 
 info_df.info()
 
-
-# In[20]:
-
-
 info_df = info_df[info_df['gender'].notna()]
-
-
-# In[21]:
-
 
 info_df.reset_index(drop=True,inplace=True)
 info_df
-
-
-# In[22]:
-
 
 #Number of males and females
 import matplotlib.pyplot as plt
@@ -96,9 +56,6 @@ plt.title("GENDERS IN THE GIVEN DATASET")
 plt.show()
 
 
-# In[23]:
-
-
 genderConfidenceCount = info_df.groupby('gender:confidence').size()
 gcData = genderConfidenceCount.to_dict()
 gcData
@@ -111,54 +68,29 @@ plt.title('TYPES OF GENDER CONFIDENCE AND THEIR COUNTS')
 plt.show() 
 
 
-# In[24]:
-
-
 plt.plot(x, y, color='green', linestyle='dashed', linewidth = 3, 
          marker='o', markerfacecolor='blue', markersize=12)
 
 
-# In[26]:
-
-
 info_df.info()
-
-
-# In[27]:
-
 
 info_df=info_df[info_df['gender:confidence']>0.8]
 info_df
 
-
-# In[28]:
-
-
 info_df.reset_index(drop=True,inplace=True)
 info_df
-
-
-# In[29]:
-
 
 info_df=info_df[info_df['gender']!='unknown']
 
 
-# In[30]:
-
 
 info_df.reset_index(drop=True, inplace=True)
-
-
-# In[31]:
 
 
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 stop_words = stopwords.words('English')
 
-
-# In[32]:
 
 
 clean_texts = []
@@ -176,9 +108,6 @@ for i in range(info_df.shape[0]):
     clean_texts.append(clean_message)        
     
 len(clean_texts)
-
-
-# In[33]:
 
 
 info_df['clean_texts']=clean_texts
@@ -241,9 +170,6 @@ for i in list(sorted_male.items())[:5]:
     print('{}: {}'.format(i[0], i[1]))
 
 
-# In[35]:
-
-
 #TOP 5 WORDS MOST USED BY MALES AND FEMALES
 #BY FEMALES
 xF = list(sorted_female.keys())[:5]
@@ -268,7 +194,6 @@ plt.show()
 # Method 1: USING RANDOM FOREST CLASSIFICATION
 # -----------
 
-# In[71]:
 
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -279,44 +204,19 @@ Y = info_df['gender']
 X = cv.fit_transform(X)
 X_train,X_test, y_train, y_test = train_test_split(X,info_df['gender'])
 
-
-# In[72]:
-
-
 from sklearn.ensemble import RandomForestClassifier
-
-
-# In[73]:
 
 
 rfClassifier = RandomForestClassifier(n_estimators=100)
 
-
-# In[74]:
-
-
 rfClassifier.fit(X_train,y_train)
-
-
-# In[75]:
-
 
 y_pred=rfClassifier.predict(X_test)
 
 
-# In[76]:
-
-
 from sklearn import metrics
 
-
-# In[77]:
-
-
 accuracy = metrics.accuracy_score(y_test, y_pred)
-
-
-# In[78]:
 
 
 accuracy
@@ -332,67 +232,29 @@ accuracy
 
 # # NAIVE BAYES
 
-# In[45]:
-
-
 from sklearn.feature_extraction.text import CountVectorizer
-
-
-# In[46]:
-
 
 cv = CountVectorizer()
 sparse_data = cv.fit_transform(info_df['clean_texts'])
 
-
-# In[60]:
-
-
 X= sparse_data
-
-
-# In[21]:
 
 
 from sklearn.model_selection import train_test_split
 X_train,X_test, y_train, y_test = train_test_split(sparse_data, info_df['gender'])
-
-
-# In[22]:
-
 
 from sklearn.naive_bayes import MultinomialNB
 
 
 # Attempt-1:
 
-#                   
-
-# In[23]:
-
-
 clf = MultinomialNB()
-
-
-# In[24]:
-
 
 clf.fit(X_train, y_train)
 
-
-# In[25]:
-
-
 predicted = clf.predict(X_test)
 
-
-# In[26]:
-
-
 from sklearn.metrics import accuracy_score
-
-
-# In[27]:
 
 
 accuracy_score(y_test, predicted)
@@ -400,52 +262,21 @@ accuracy_score(y_test, predicted)
 
 # Accuracy of Naive Bayes: 58.2%
 
-#           
-
-#                    
-
-# In[28]:
-
-
 ## Concatenating description to clean_texts
 
 
-# In[29]:
-
-
 info_df['text+description']=info_df['clean_texts'].astype(str)+' '+ info_df['description'].astype(str)
-
-
-# In[30]:
-
 
 info_df
 
 
 # Attempt-2:
 
-#     
-
-# In[31]:
-
-
 sparse_data2 = cv.fit_transform(info_df['text+description'])
-
-
-# In[32]:
-
 
 X_train,X_test, y_train, y_test = train_test_split(sparse_data2, info_df['gender'])
 
-
-# In[33]:
-
-
 clf.fit(X_train, y_train)
-
-
-# In[34]:
-
 
 y_predicted = clf.predict(X_test)
 
@@ -458,52 +289,21 @@ accuracy_score(y_test, y_predicted)
 
 # Accuracy of Naive Bayes: 68.3% 
 
-#  
-
-#  
-
-# In[36]:
-
-
 ## Concatenate name to text+ description
 
 
 # Attempt-3:
 
-#  
-
-# In[37]:
-
-
 info_df['text+description+name']=info_df['clean_texts'].astype(str)+' '+ info_df['description'].astype(str)+' '+info_df['name'].astype(str)
-
-
-# In[38]:
-
 
 sparse_data3 = cv.fit_transform(info_df['text+description+name'])
 
 
-# In[39]:
-
-
 X_train,X_test, y_train, y_test = train_test_split(sparse_data3, info_df['gender'])
-
-
-# In[40]:
-
 
 clf.fit(X_train, y_train)
 
-
-# In[41]:
-
-
 y_predicted = clf.predict(X_test)
-
-
-# In[42]:
-
 
 accuracy_score(y_test, y_predicted)
 
@@ -663,14 +463,7 @@ def KNNAlgorithmPredictor(testRow,trainDataSet):
     return ans
 
 
-# In[69]:
-
-
 # KNNAlgorithmPredictor()
-
-
-# In[64]:
-
 
 # To find the accuracy of the self-made algorithm
 testSet = pd.DataFrame()
@@ -713,10 +506,6 @@ for i in range(trainSize,(trainSize+50)+1):
     }
     testSet = testSet.append(testData,ignore_index=True)
 
-
-# In[76]:
-
-
 # Starting the prediction
 # print(testSet.iloc[0])
 score = 0
@@ -731,14 +520,7 @@ for i in range(len(testSet)-10,len(testSet)):
 print(score/len(testSet))
 
 
-# In[77]:
-
-
 print('Accuracy : ',(score/10)*100)
 
 
-# Accuracy of KNN is: 40%
-
-#  
-
-#  
+# Accuracy of KNN is: 40%  
