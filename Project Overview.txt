@@ -1,0 +1,42 @@
+﻿Major Project Verzeo
+
+
+ Dataset: Tweets gender dataset (Default)
+Questions Undertaken:
+1. Top 5 most commonly used words by males and females
+2. Gender Determination
+EDA and Visualization steps taken:
+1. Attributes used: 'gender', 'gender:confidence', 'description','link_color', 'name', 'sidebar_color', 'text', 'tweet_count'
+2. Remove NaN datapoints from ‘gender’ and accepted ‘gender:confidence’>0.8
+3. Removed ‘Unknown’ gender type
+4. Removed stopwords(Using NLP) and added ‘clean_texts’  column(Feature Engineering)
+Visualization:
+5. Plots on ‘gender:confidence’ frequencies, bar plot on question 1: commonly used words by males and females.
+Methods Used:
+Question 1 done by generic python (Regex used).
+For Question 2:
+1. Dependent Variable: ‘gender’
+2. Independent Variables: 'gender:confidence', 'description','link_color', 'name', 'sidebar_color', 'text', 'tweet_count'
+METHODS:
+1. Random Forest Classification:
+Independent Variable:’clean_texts’
+Accuracy: 56.9%
+
+
+2. Naïve Bayes:
+Attempt 1: 
+Independent Variable:’clean_texts’
+        Accuracy: 58.2%
+Attempt 2:
+Independent Variable: ‘clean_texts’,’description’
+        Accuracy: 68.3%
+
+
+Attempt 3: 
+Independent Variable: ‘clean_texts’,’description’,’name’
+        Accuracy: 69.6%
+
+
+3. KNN without using Libraries:
+6. Independent Variable:’ , 'gender:confidence', 'description','link_color', 'name', 'sidebar_color', 'text', 'tweet_count',’clean_texts’
+Accuracy: 40%
