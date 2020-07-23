@@ -1,4 +1,4 @@
-
+## Twitter Sentiment Analysis
 
 This project was implemented during my internship at **Verzeo Private Limited**.It is nlp based project which uses ensemble modeling to analyse the twitter-dataset.It basically uses different model like Random Forest, Naive Bayes, Decision Tree to analyse the dataset.
 
